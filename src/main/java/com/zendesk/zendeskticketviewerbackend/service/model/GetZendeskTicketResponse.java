@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
+// This is a model mapping to Zendesk API response
 public class GetZendeskTicketResponse {
 
     @JsonProperty("tickets")

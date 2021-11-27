@@ -11,9 +11,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class ZendeskAPI {
-
+    // this is the basic api address
     public static String basicUrl = "https://anySubdomain.zendesk.com/api/v2/tickets.json?page[size]=25";
 
     private final HttpClient httpClient;
@@ -21,7 +22,8 @@ public class ZendeskAPI {
     public ZendeskAPI(HttpClient httpClient) {
         this.httpClient = httpClient;
     }
-
+    // in this method, we request Zendesk api,
+    // We add the auth-info and subdomain to the request header
     public GetZendeskTicketResponse getTicketsWithCursorPagination(String subdomain, String authHeader, String url) {
         try {
 
@@ -30,11 +32,11 @@ public class ZendeskAPI {
             httpGet.addHeader("Authorization",  authHeader);
 
             HttpResponse httpResponse = httpClient.execute(httpGet);
-
+            // if it requests fail, we throw the error and catch it in TicketController, report correspond Status code
             if (HttpStatus.SC_UNAUTHORIZED == httpResponse.getStatusLine().getStatusCode()) {
                 throw new UnauthorizedException("Unauthorized");
             }
-
+            // if it requests success, we map the responseEntity to GetZendeskTicketResponse
             HttpEntity responseEntity = httpResponse.getEntity();
             String result = EntityUtils.toString(responseEntity);
             ObjectMapper objectMapper = new ObjectMapper();

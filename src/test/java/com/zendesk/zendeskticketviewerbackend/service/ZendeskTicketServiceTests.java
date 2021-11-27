@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.zendesk.zendeskticketviewerbackend.service.ZendeskAPI.basicUrl;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -22,6 +23,7 @@ import static org.mockito.ArgumentMatchers.eq;
 public class ZendeskTicketServiceTests {
 
     private static final String AUTH_HEADER = "auth-header";
+    private static final String SUB_DOMAIN = "zccshuaizhelp";
 
     @Mock
     private ZendeskAPI zendeskAPI;
@@ -34,6 +36,8 @@ public class ZendeskTicketServiceTests {
         zendeskTicketService = new ZendeskTicketService(zendeskAPI);
     }
 
+    // We test if the method getAllTickets() in service can return the tickets,
+    // we assume it requests fail and get 0 tickets, request 1 time
     @Test
     public void getAllTickets_noTicketFound_success() {
         //Arrange
@@ -42,17 +46,19 @@ public class ZendeskTicketServiceTests {
                 .meta(Meta.builder().hasMore(false).build())
                 .links(Links.builder().build())
                 .build();
-//        Mockito.when(zendeskAPI.getTicketsWithCursorPagination(any(), any()))
-//                .thenReturn(getZendeskTicketResponse);
-//
-//        //Act
-//        List<TicketDTO> ticketsResult = zendeskTicketService.getAllTickets(AUTH_HEADER);
-//
-//        //Assert
-//        assertTrue(ticketsResult.size() == 0);
-//        Mockito.verify(zendeskAPI, Mockito.times(1)).getTicketsWithCursorPagination(eq(AUTH_HEADER), any());
+        Mockito.when(zendeskAPI.getTicketsWithCursorPagination(any(), any(), any()))
+                .thenReturn(getZendeskTicketResponse);
+
+        //Act
+        List<TicketDTO> ticketsResult = zendeskTicketService.getAllTickets(SUB_DOMAIN, AUTH_HEADER);
+
+        //Assert
+        assertEquals(0, ticketsResult.size());
+        Mockito.verify(zendeskAPI, Mockito.times(1)).getTicketsWithCursorPagination(SUB_DOMAIN, AUTH_HEADER, basicUrl);
     }
 
+    // We test if the method getAllTickets() in service can return the tickets,
+    // we assume it requests successfully and get 5 tickets, request 3 times
     @Test
     public void getAllTickets_5TicketFoundInThreePages_success() {
         //Arrange
@@ -80,20 +86,22 @@ public class ZendeskTicketServiceTests {
                 .links(Links.builder().build())
                 .build();
 
-//        Mockito.when(zendeskAPI.getTicketsWithCursorPagination(any(), eq(INITIAL_GET_TICKETS_URL))).thenReturn(getZendeskTicketResponse1);
-//        Mockito.when(zendeskAPI.getTicketsWithCursorPagination(any(), eq(nextUrl1))).thenReturn(getZendeskTicketResponse2);
-//        Mockito.when(zendeskAPI.getTicketsWithCursorPagination(any(), eq(nextUrl2))).thenReturn(getZendeskTicketResponse3);
-//
-//        //Act
-//        List<TicketDTO> ticketsResult = zendeskTicketService.getAllTickets(AUTH_HEADER);
-//
-//        //Assert
-//        assertTrue(ticketsResult.size() == 5);
-//        assertTrue(ticketsResult.contains(ticketDTO1));
-//        assertTrue(ticketsResult.contains(ticketDTO2));
-//        assertTrue(ticketsResult.contains(ticketDTO3));
-//        assertTrue(ticketsResult.contains(ticketDTO4));
-//        assertTrue(ticketsResult.contains(ticketDTO5));
-//        Mockito.verify(zendeskAPI, Mockito.times(3)).getTicketsWithCursorPagination(eq(AUTH_HEADER), any());
+        Mockito.when(zendeskAPI.getTicketsWithCursorPagination(SUB_DOMAIN, AUTH_HEADER, basicUrl)).thenReturn(getZendeskTicketResponse1);
+        Mockito.when(zendeskAPI.getTicketsWithCursorPagination(SUB_DOMAIN, AUTH_HEADER, nextUrl1)).thenReturn(getZendeskTicketResponse2);
+        Mockito.when(zendeskAPI.getTicketsWithCursorPagination(SUB_DOMAIN, AUTH_HEADER, nextUrl2)).thenReturn(getZendeskTicketResponse3);
+
+        //Act
+        List<TicketDTO> ticketsResult = zendeskTicketService.getAllTickets(SUB_DOMAIN, AUTH_HEADER);
+
+        //Assert
+        assertEquals(5, ticketsResult.size());
+        assertTrue(ticketsResult.contains(ticketDTO1));
+        assertTrue(ticketsResult.contains(ticketDTO2));
+        assertTrue(ticketsResult.contains(ticketDTO3));
+        assertTrue(ticketsResult.contains(ticketDTO4));
+        assertTrue(ticketsResult.contains(ticketDTO5));
+        Mockito.verify(zendeskAPI, Mockito.times(1)).getTicketsWithCursorPagination(SUB_DOMAIN, AUTH_HEADER, basicUrl);
+        Mockito.verify(zendeskAPI, Mockito.times(1)).getTicketsWithCursorPagination(SUB_DOMAIN, AUTH_HEADER, basicUrl);
+        Mockito.verify(zendeskAPI, Mockito.times(1)).getTicketsWithCursorPagination(SUB_DOMAIN, AUTH_HEADER, basicUrl);
     }
 }

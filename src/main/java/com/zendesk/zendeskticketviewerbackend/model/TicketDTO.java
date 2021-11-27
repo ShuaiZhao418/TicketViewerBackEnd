@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
+// This is the model that we response to front end
 public class TicketDTO {
 
     @JsonProperty("created_at")
@@ -21,7 +22,7 @@ public class TicketDTO {
     String updatedAt;
 
     @JsonProperty("type")
-    String type;
+    Type type;
 
     @JsonProperty("subject")
     String subject;
@@ -33,7 +34,7 @@ public class TicketDTO {
     String priority;
 
     @JsonProperty("status")
-    Status status;
+    String status;
 
     @JsonProperty("requester_id")
     String requesterId;

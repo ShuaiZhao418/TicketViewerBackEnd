@@ -32,7 +32,7 @@ public class TicketController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
-
+    // Get the auth info we pass from front end
     private String getBasicAuth(HttpServletRequest request) {
         return request.getHeader(AUTH_HEADER_PARAMETER_AUTHORIZATION);
     }

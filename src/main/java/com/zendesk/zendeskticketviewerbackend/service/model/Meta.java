@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Meta {
-
+    // we only write "hasMore" priority to check if there is next page
     @JsonProperty("has_more")
     boolean hasMore;
 }
