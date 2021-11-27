@@ -15,6 +15,7 @@ For using this project:
 3.Enter code **"mvn spring-boot:run"** to run the Back-end.   
    
 Final:
+Thanks for your time and patience!
 Thanks for reviewing my project!  
 
 
