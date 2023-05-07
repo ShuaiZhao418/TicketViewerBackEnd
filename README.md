@@ -1,5 +1,4 @@
-# TicketViewerBackEnd
-**The project is in the master branch!!!**   
+# TicketViewerBackEnd 
   
 Please review Front-end in another project **TicketViewerFrontEnd**.  
    
